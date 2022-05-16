@@ -1,0 +1,13 @@
+.my-button {
+  background-color: var(--primary-color);
+  color: var(--font-color);
+  font-weight: 800;
+  border-radius: 2rem;
+  border: none;
+}
+
+.my-button:hover,
+.my-button:active {
+  background-color: var(--tertiary-color);
+  cursor: pointer;
+}

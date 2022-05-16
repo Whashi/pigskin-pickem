@@ -1,0 +1,17 @@
+.game-block {
+  display: flex;
+  justify-content: space-around;
+  margin: 5%;
+}
+
+.team-picker {
+  display: flex;
+  align-items: center;
+  width: 30%;
+  justify-content: space-around;
+
+}
+
+.radio {
+  list-style-type: none;
+}
