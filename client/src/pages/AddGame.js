@@ -1,6 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import Button from "../ui/Button";
+import Header from "../components/Header";
+
+import classes from "./AddGame.module.css";
 
 const AddGameForm = () => {
   const d = new Date();
@@ -41,6 +44,8 @@ const AddGameForm = () => {
 
   return (
     <div>
+    <Header />
+    <h2 className={classes.title}>Add Game</h2>
       <form onSubmit={submitHandler}>
         <label htmlFor="home-team">Home Team</label>
         <input

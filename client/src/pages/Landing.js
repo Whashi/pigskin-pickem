@@ -2,6 +2,8 @@ import { useState } from "react";
 import Login from "../components/Login";
 import SignUp from "../components/SignUp";
 
+import classes from "./Landing.module.css"
+
 const Landing = () => {
   const [signUp, setSignUp] = useState(false);
   const signUpToggle = () => {

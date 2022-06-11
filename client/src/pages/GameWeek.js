@@ -1,25 +1,15 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import AddGameForm from "../components/AddGameForm";
 import Game from "../components/Game";
 import Header from "../components/Header";
 import { GameContext } from "../store/game-context";
-import Button from "../ui/Button";
 
 import classes from "./GameWeek.module.css";
 
 const GameWeek = () => {
-  const [editMode, setEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [httpError, setHttpError] = useState();
-
-  const editModeToggle = () => {
-    setEditMode(!editMode);
-  };
-  const [showAddGameForm, setshowAddGameForm] = useState(false);
-  const showAddGameFormToggle = () => {
-    setshowAddGameForm(!showAddGameForm);
-  };
+  const [weekSelector, setWeekSelector] = useState("1");
 
   const { games, setAllGames } = useContext(GameContext);
 
@@ -49,14 +39,20 @@ const GameWeek = () => {
     return <p>{httpError}</p>;
   }
 
+  const gameWeekChangeHandler = (e) => {
+    setWeekSelector(e.target.value);
+  };
+
   const gameList = games.map((game, index) => {
     return (
       <Game
         key={game._id}
         gameId={game._id}
         index={index}
-        homeTeam={game.homeTeam.name}
-        awayTeam={game.awayTeam.name}
+        homeTeam={game.homeTeam}
+        awayTeam={game.awayTeam}
+        weekNumber={game.weekNumber}
+        weekSelector={weekSelector}
       />
     );
   });
@@ -65,14 +61,16 @@ const GameWeek = () => {
     <div>
       <Header />
       <h2 className={classes.title}>Game Week</h2>
+      <label htmlFor="week-number">Week</label>
+      <input
+        type="number"
+        id="week-number"
+        max="17"
+        min="1"
+        onChange={gameWeekChangeHandler}
+        value={weekSelector}
+      />
       <ul className={classes["game-list"]}>{gameList}</ul>
-      <Button className={classes["edit-game-button"]} onClick={editModeToggle}>
-        Edit Game List
-      </Button>
-      {editMode ? (
-        <Button onClick={showAddGameFormToggle}>Add Game</Button>
-      ) : null}
-      {showAddGameForm ? <AddGameForm /> : null}
     </div>
   );
 };

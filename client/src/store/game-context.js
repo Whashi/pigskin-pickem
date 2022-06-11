@@ -23,7 +23,6 @@ export const GameProvider = ({ children }) => {
         userId,
       },
     });
-    console.log(state);
   }
 
   return (

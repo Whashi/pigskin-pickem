@@ -6,10 +6,18 @@ const GameSchema = new mongoose.Schema({
   homeTeam: {
     name: String,
     picks: [String],
+    won: {
+      type: Boolean,
+      default: false
+    }
   },
   awayTeam: {
     name: String,
     picks: [String],
+    won: {
+      type: Boolean,
+      default: false
+    }
   },
 });
 

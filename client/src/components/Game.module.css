@@ -4,6 +4,10 @@
   margin: 5%;
 }
 
+.no-show {
+  display: none;
+}
+
 .team-picker {
   display: flex;
   align-items: center;

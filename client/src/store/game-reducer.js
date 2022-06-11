@@ -6,8 +6,11 @@ const gameReducer = (state, action) => {
         games: action.payload,
       };
     case "CHOOSE_TEAM": {
-      let picksClone;
-      let teamClone;
+      // put in backend
+      let homeTeamPicksClone;
+      let awayTeamPicksClone;
+      let chosenTeamClone;
+      let notChosenTeamClone;
       let newGame;
       let pick;
       let i;
@@ -24,28 +27,34 @@ const gameReducer = (state, action) => {
             ...state,
           };
         }
-        picksClone = [...pick.homeTeam.picks, action.payload.userId];
-        teamClone = { ...pick.homeTeam, picks: picksClone };
-        newGame = { ...pick, homeTeam: teamClone };
-        if (pick.awayTeam.picks.includes(action.payload.userId)) {
-          newGame.awayTeam.picks.filter((id) => {
-            return id !== action.payload.userId;
-          });
-        }
+        homeTeamPicksClone = [...pick.homeTeam.picks, action.payload.userId];
+        chosenTeamClone = { ...pick.homeTeam, picks: homeTeamPicksClone };
+        awayTeamPicksClone = pick.awayTeam.picks.filter((id) => {
+          return id !== action.payload.userId;
+        });
+        notChosenTeamClone = { ...pick.awayTeam, picks: awayTeamPicksClone}
+        newGame = {
+          ...pick,
+          homeTeam: chosenTeamClone,
+          awayTeam: notChosenTeamClone,
+        };
       } else if (action.payload.teamChoice === "away-team") {
         if (pick.awayTeam.picks.includes(action.payload.userId)) {
           return {
             ...state,
           };
         }
-        picksClone = [...pick.homeTeam.picks, action.payload.userId];
-        teamClone = { ...pick.homeTeam, picks: picksClone };
-        newGame = { ...pick, homeTeam: teamClone };
-        if (pick.homeTeam.picks.includes(action.payload.userId)) {
-          newGame.homeTeam.picks.filter((id) => {
-            return id !== action.payload.userId;
-          });
-        }
+        awayTeamPicksClone = [...pick.awayTeam.picks, action.payload.userId];
+        chosenTeamClone = { ...pick.awayTeam, picks: awayTeamPicksClone };
+        homeTeamPicksClone = pick.homeTeam.picks.filter((id) => {
+          return id !== action.payload.userId;
+        });
+        notChosenTeamClone = { ...pick.homeTeam, picks: homeTeamPicksClone}
+        newGame = {
+          ...pick,
+          awayTeam: chosenTeamClone,
+          homeTeam: notChosenTeamClone,
+        };
       }
 
       newGames = [...state.games];

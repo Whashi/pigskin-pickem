@@ -10,16 +10,21 @@ const Navigation = (props) => {
   return (
     <nav>
       <ul className={classes["nav-list"]}>
-        <li className={classes["nav-item"]}>
-          <Link className={classes.link} to="/video-list">
-            Video List
+      <li className={classes["nav-item"]}>
+          <Link className={classes.link} to="/game-week">
+            Game Week
           </Link>
         </li>
         <li className={classes["nav-item"]}>
+          <Link className={classes.link} to="/add-game">
+            Add Game
+          </Link>
+        </li>
+        {/* <li className={classes["nav-item"]}>
           <Link className={classes.link} to="/change-password">
             Change Password
           </Link>
-        </li>
+        </li> */}
         <li>
           <Button
             className={buttonClass}

@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
 const Game = require("../models/gameModal");
-const LockTimes = require("../config/gameLockTimes");
 
 exports.addGame = async (req, res) => {
   try {
-    console.log(req.body);
     const newGame = await Game.create(req.body);
-    
+
     return res.status(200).json({
       success: true,
       data: newGame,
@@ -52,12 +50,83 @@ exports.updateGame = async (req, res) => {
         error: "File Not Found",
       });
     }
-    const gameById = await Game.findById(_id);
-    const d1 = LockTimes[gameById.weekNumber - 1];
+
+    const updatedGame = await Game.findByIdAndUpdate(_id, game, {
+      new: true,
+    });
+    return res.status(200).json({
+      success: true,
+      data: updatedGame,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      success: false,
+      error: err,
+    });
+  }
+};
+
+exports.chooseTeam = async (req, res) => {
+  const { gameId, team, userId } = req.body;
+  let homeTeamPicksClone;
+  let awayTeamPicksClone;
+  let chosenTeamClone;
+  let notChosenTeamClone;
+  let newGame;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(gameId)) {
+      return res.status(404).json({
+        success: false,
+        msg: "File Not Found",
+      });
+    }
+    const gameById = await Game.findById(gameId);
+    const d1 = gameById.lockTime;
     const d2 = new Date();
 
     if (d1.valueOf() > d2.valueOf()) {
-      const updatedGame = await Game.findByIdAndUpdate(_id, game, {
+      const { homeTeam, awayTeam } = gameById;
+      if (team === "home-team") {
+        if (gameById.homeTeam.picks.includes(userId)) {
+          return res.status(200).json({
+            success: true,
+            data: gameById,
+          });
+        }
+
+        homeTeamPicksClone = [...gameById.homeTeam.picks, userId];
+        chosenTeamClone = { ...homeTeam, picks: homeTeamPicksClone };
+        awayTeamPicksClone = gameById.awayTeam.picks.filter((id) => {
+          return id !== userId;
+        });
+        notChosenTeamClone = { ...awayTeam, picks: awayTeamPicksClone };
+        newGame = {
+          ...gameById._doc,
+          homeTeam: chosenTeamClone,
+          awayTeam: notChosenTeamClone,
+        };
+      } else if (team === "away-team") {
+        if (gameById.awayTeam.picks.includes(userId)) {
+          return res.status(200).json({
+            success: true,
+            data: gameById,
+          });
+        }
+        awayTeamPicksClone = [...gameById.awayTeam.picks, userId];
+        chosenTeamClone = { ...awayTeam, picks: awayTeamPicksClone };
+        homeTeamPicksClone = gameById.homeTeam.picks.filter((id) => {
+          return id !== userId;
+        });
+        notChosenTeamClone = { ...homeTeam, picks: homeTeamPicksClone };
+        newGame = {
+          ...gameById._doc,
+          awayTeam: chosenTeamClone,
+          homeTeam: notChosenTeamClone,
+        };
+      }
+
+      const updatedGame = await Game.findByIdAndUpdate(gameId, newGame, {
         new: true,
       });
       return res.status(200).json({
@@ -67,14 +136,14 @@ exports.updateGame = async (req, res) => {
     } else {
       return res.status(400).json({
         success: false,
-        error: "Too Late Son",
+        msg: "Too Late Son",
       });
     }
   } catch (err) {
     console.log(err);
     return res.status(500).json({
       success: false,
-      error: err,
+      msg: err,
     });
   }
 };
@@ -85,7 +154,7 @@ exports.deleteGame = async (req, res) => {
     if (!game) {
       return res.status(404).json({
         success: false,
-        error: "File Not Found",
+        msg: "File Not Found",
       });
     }
     await game.remove();
@@ -96,7 +165,7 @@ exports.deleteGame = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       success: false,
-      error: err,
+      msg: err,
     });
   }
 };
