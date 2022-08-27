@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../store/user-context";
 import axios from "axios";
 
 import useInputField from "../hooks/input-field";
@@ -9,6 +10,8 @@ import Button from "../ui/Button";
 import classes from "./SignUp.module.css";
 
 const SignUp = (props) => {
+  const { setUser } = useContext(UserContext);
+
   // Destructuring the costume hook to use for the username field
 
   const {
@@ -100,7 +103,9 @@ const SignUp = (props) => {
       if (response) {
         localStorage.setItem("x-auth-token", response.data.token);
         localStorage.setItem("user-id", response.data.id);
+        localStorage.setItem("user-name", response.data.user);
         // Make a database with current user ids that are logged on and tokens as their key. Have a function check the database every api call
+        setUser(response.data.user);
         navigate("/game-week/");
       }
     }

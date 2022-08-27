@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import Header from "../components/Header";
 
@@ -18,6 +19,8 @@ const AddGameForm = () => {
     homeTeam: { name: "", picks: [] },
     awayTeam: { name: "", picks: [] },
   });
+  const [httpError, setHttpError] = useState();
+  const navigate = useNavigate();
 
   const homeTeamChangeHandler = (e) => {
     const clone = { name: e.target.value, picks: [] };
@@ -39,13 +42,35 @@ const AddGameForm = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    await axios.post(`/game/`, gameData);
+    const response = await axios
+      .get(`/user/${localStorage.getItem("user-id")}/`, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": localStorage.getItem("x-auth-token"),
+        },
+      })
+      .catch((err) => {
+        setHttpError(err.response.data.msg);
+      });
+    if (response) {
+      if (response.data.data.auth === 1) {
+        axios.post(`/game/`, gameData);
+      }
+      else {
+        console.log("Stop it");
+      }
+    }
+    navigate("/game-week");
   };
+
+  if (httpError) {
+    return <h3>{httpError}</h3>;
+  }
 
   return (
     <div>
-    <Header />
-    <h2 className={classes.title}>Add Game</h2>
+      <Header />
+      <h2 className={classes.title}>Add Game</h2>
       <form onSubmit={submitHandler}>
         <label htmlFor="home-team">Home Team</label>
         <input

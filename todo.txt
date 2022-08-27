@@ -1,2 +1,4 @@
 make webscrapper for game data
 add run webscrapper option to add game page and update game page
+
+have a weekly score system and an annual score system

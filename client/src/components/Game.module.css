@@ -16,6 +16,10 @@
 
 }
 
-.radio {
-  list-style-type: none;
+.won {
+  background-color: green;
+}
+
+.lost {
+  background-color: red;
 }

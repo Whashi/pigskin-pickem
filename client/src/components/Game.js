@@ -1,3 +1,4 @@
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
@@ -7,6 +8,8 @@ import classes from "./Game.module.css";
 const Game = (props) => {
   const index = props.index;
   const navigate = useNavigate();
+  const privilaged = localStorage.getItem("privilage") === "1";
+  const [httpError, setHttpError] = useState("");
 
   const pickHandler = async (e) => {
     const { gameId } = props;
@@ -22,12 +25,17 @@ const Game = (props) => {
           headers: { "x-auth-token": localStorage.getItem("x-auth-token") },
         }
       )
-      .catch((err) => console.log(err.response.data.msg));
+      .catch((err) => {
+        setHttpError(err.response.data.msg);
+      });
   };
 
   const editButtonClickHandler = () => {
-    navigate(`/update-game/${props.gameId}`)
-  }
+    navigate(`/update-game/${props.gameId}`);
+  };
+
+  const wonClass = `${classes["team-picker"]} ${classes["won"]}`;
+  const lostClass = `${classes["team-picker"]} ${classes["lost"]}`;
 
   return (
     <div
@@ -37,36 +45,25 @@ const Game = (props) => {
           : classes["no-show"]
       }
     >
-      <div className={classes["team-picker"]}>
-        <input
-          type="radio"
-          id={index}
-          name={index}
-          value="home-team"
-          onClick={pickHandler}
-          className={classes.radio}
-          defaultChecked={props.homeTeam.picks.includes(
-            localStorage.getItem("user-id")
-          )}
-        />
-        <h3>{props.homeTeam.name}</h3>
+      <div className={props.homeTeam.won ? wonClass : lostClass}>
+      <div className={props.homeTeam.picks.includes(localStorage.getItem("user-id")) ? classes["no-show"] : classes["check-mark"]}>X</div>
+        <h3 id={index} name={index} onClick={pickHandler}>
+          {props.homeTeam.name}
+        </h3>
       </div>
       <h4>vs</h4>
-      <div className={classes["team-picker"]}>
-        <h3>{props.awayTeam.name}</h3>
-        <input
-          type="radio"
-          id={index}
-          name={index}
-          value="away-team"
-          onClick={pickHandler}
-          className={classes.radio}
-          defaultChecked={props.awayTeam.picks.includes(
-            localStorage.getItem("user-id")
-          )}
-        />
+      <div className={props.awayTeam.won ? wonClass : lostClass}>
+        <h3 id={index} name={index} onClick={pickHandler}>
+          {props.awayTeam.name}
+        </h3>
+        <div className={props.awayTeam.picks.includes(localStorage.getItem("user-id")) ? classes["no-show"] : classes["check-mark"]}>X</div>
       </div>
-      <Button onClick={editButtonClickHandler}>Edit</Button>
+      {privilaged && <Button onClick={editButtonClickHandler}>Edit</Button>}
+      <h5>
+        {httpError === "Too Late Son"
+          ? "Lock time for this game has passed"
+          : null}
+      </h5>
     </div>
   );
 };

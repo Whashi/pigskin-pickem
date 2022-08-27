@@ -5,31 +5,31 @@ import Button from "../ui/Button";
 import classes from "./Navigation.module.css";
 
 const Navigation = (props) => {
-  const buttonClass = `${classes["logout-button"]} ${classes["nav-item"]}`
+  const buttonClass = `${classes["logout-button"]} ${classes["nav-item"]}`;
+  const privilaged = localStorage.getItem("privilage") === "1";
 
   return (
     <nav>
       <ul className={classes["nav-list"]}>
-      <li className={classes["nav-item"]}>
+        <li className={classes["nav-item"]}>
           <Link className={classes.link} to="/game-week">
             Game Week
           </Link>
         </li>
-        <li className={classes["nav-item"]}>
-          <Link className={classes.link} to="/add-game">
-            Add Game
-          </Link>
-        </li>
+        {privilaged && (
+          <li className={classes["nav-item"]}>
+            <Link className={classes.link} to="/add-game">
+              Add Game
+            </Link>
+          </li>
+        )}
         {/* <li className={classes["nav-item"]}>
           <Link className={classes.link} to="/change-password">
             Change Password
           </Link>
         </li> */}
         <li>
-          <Button
-            className={buttonClass}
-            onClick={props.logOut}
-          >
+          <Button className={buttonClass} onClick={props.logOut}>
             Logout
           </Button>
         </li>

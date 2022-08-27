@@ -62,6 +62,8 @@ exports.getUserId = async (req, res) => {
                 token,
                 success: true,
                 id: docs._id,
+                auth: docs.auth,
+                user: docs.userName
               });
             }
           );
@@ -106,6 +108,7 @@ exports.getUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const { id: _id } = req.params;
   const User = req.body;
+  console.log(_id);
   try {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       return res.status(404).json({
@@ -121,6 +124,7 @@ exports.updateUser = async (req, res) => {
       data: updatedUser,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       success: false,
       error: err,

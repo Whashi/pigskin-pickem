@@ -40,6 +40,28 @@ exports.getGames = async (req, res) => {
   }
 };
 
+exports.getGame = async (req, res) => {
+  const { id: _id } = req.params;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+      return res.status(404).json({
+        success: false,
+        error: "File Not Found",
+      });
+    }
+    const game = await Game.findById(_id);
+    return res.status(200).json({
+      success: true,
+      data: game,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err,
+    });
+  }
+};
+
 exports.updateGame = async (req, res) => {
   const { id: _id } = req.params;
   const game = req.body;
@@ -51,7 +73,11 @@ exports.updateGame = async (req, res) => {
       });
     }
 
-    const updatedGame = await Game.findByIdAndUpdate(_id, game, {
+    const parsedDate = new Date(game.lockTime)
+
+    const parsedDateGame = {...game, lockTime: parsedDate}
+
+    const updatedGame = await Game.findByIdAndUpdate(_id, parsedDateGame, {
       new: true,
     });
     return res.status(200).json({

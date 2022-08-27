@@ -12,6 +12,7 @@ const GameWeek = () => {
   const [weekSelector, setWeekSelector] = useState("1");
 
   const { games, setAllGames } = useContext(GameContext);
+  const user = localStorage.getItem("user-name");
 
   useEffect(() => {
     const getGames = async () => {
@@ -60,7 +61,7 @@ const GameWeek = () => {
   return (
     <div>
       <Header />
-      <h2 className={classes.title}>Game Week</h2>
+      <h2 className={classes.title}>Hello {user}</h2>
       <label htmlFor="week-number">Week</label>
       <input
         type="number"

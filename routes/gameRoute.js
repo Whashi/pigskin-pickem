@@ -4,6 +4,7 @@ const auth = require("../middleware/auth");
 
 const {
   addGame,
+  getGame,
   getGames,
   chooseTeam,
   deleteGame,
@@ -12,6 +13,6 @@ const {
 
 router.route("/").post(addGame).get(auth, getGames).patch(auth, chooseTeam);
 
-router.route("/:id").delete(deleteGame).patch(auth, updateGame);
+router.route("/:id").get(auth, getGame).patch(auth, updateGame).delete(deleteGame);
 
 module.exports = router;
