@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
+const { setWins } = require("./winController");
+
 dotenv.config({ path: "./config/config.env" });
 
 exports.addUser = async (req, res) => {
@@ -63,7 +65,8 @@ exports.getUserId = async (req, res) => {
                 success: true,
                 id: docs._id,
                 auth: docs.auth,
-                user: docs.userName
+                user: docs.userName,
+                wins: docs.wins
               });
             }
           );
@@ -82,6 +85,7 @@ exports.getUserId = async (req, res) => {
       msg: "Server Error",
     });
   }
+  setWins()
 };
 
 exports.getUser = async (req, res) => {
@@ -105,9 +109,24 @@ exports.getUser = async (req, res) => {
   }
 };
 
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await User.find({ auth: 0 })
+    return res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      msg: "Server Error",
+    });
+  }
+}
+
 exports.updateUser = async (req, res) => {
   const { id: _id } = req.params;
-  const User = req.body;
+  const user = req.body;
   console.log(_id);
   try {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
@@ -116,7 +135,7 @@ exports.updateUser = async (req, res) => {
         error: "File Not Found",
       });
     }
-    const updatedUser = await User.findByIdAndUpdate(_id, User, {
+    const updatedUser = await User.findByIdAndUpdate(_id, user, {
       new: true,
     });
     return res.status(200).json({

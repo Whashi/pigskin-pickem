@@ -11,9 +11,8 @@ const Game = (props) => {
   const privilaged = localStorage.getItem("privilage") === "1";
   const [httpError, setHttpError] = useState("");
 
-  const pickHandler = async (e) => {
+  const pickHandler = async (team) => {
     const { gameId } = props;
-    const team = e.target.value;
     const userId = localStorage.getItem("user-id");
 
     //update games to database
@@ -46,17 +45,41 @@ const Game = (props) => {
       }
     >
       <div className={props.homeTeam.won ? wonClass : lostClass}>
-      <div className={props.homeTeam.picks.includes(localStorage.getItem("user-id")) ? classes["no-show"] : classes["check-mark"]}>X</div>
-        <h3 id={index} name={index} onClick={pickHandler}>
+        <div
+          className={
+            props.homeTeam.picks.includes(localStorage.getItem("user-id"))
+              ? classes["no-show"]
+              : classes["check-mark"]
+          }
+        >
+          X
+        </div>
+        <h3
+          id={index}
+          name={index}
+          onClick={pickHandler.bind(this, "home-team")}
+        >
           {props.homeTeam.name}
         </h3>
       </div>
       <h4>vs</h4>
       <div className={props.awayTeam.won ? wonClass : lostClass}>
-        <h3 id={index} name={index} onClick={pickHandler}>
+        <h3
+          id={index}
+          name={index}
+          onClick={pickHandler.bind(this, "away-team")}
+        >
           {props.awayTeam.name}
         </h3>
-        <div className={props.awayTeam.picks.includes(localStorage.getItem("user-id")) ? classes["no-show"] : classes["check-mark"]}>X</div>
+        <div
+          className={
+            props.awayTeam.picks.includes(localStorage.getItem("user-id"))
+              ? classes["no-show"]
+              : classes["check-mark"]
+          }
+        >
+          X
+        </div>
       </div>
       {privilaged && <Button onClick={editButtonClickHandler}>Edit</Button>}
       <h5>

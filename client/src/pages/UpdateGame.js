@@ -112,8 +112,6 @@ const UpdateGame = () => {
     navigate("/game-week");
   };
 
-  //make a patch function to update any changed to the db
-
   return (
     <div>
       <Header />

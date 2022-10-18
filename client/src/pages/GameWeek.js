@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import { GameContext } from "../store/game-context";
 
 import classes from "./GameWeek.module.css";
+import WeeklyWins from "../components/WeeklyWins";
 
 const GameWeek = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +45,13 @@ const GameWeek = () => {
     setWeekSelector(e.target.value);
   };
 
+  const wins = localStorage.getItem("wins")
+  const winsArray = wins.split(",")
+
+  const parsedWins = winsArray.map((win) => {
+      return parseInt(win);
+  });
+  
   const gameList = games.map((game, index) => {
     return (
       <Game
@@ -62,6 +70,7 @@ const GameWeek = () => {
     <div>
       <Header />
       <h2 className={classes.title}>Hello {user}</h2>
+      <h3>Annual Wins: {parsedWins.length}</h3>
       <label htmlFor="week-number">Week</label>
       <input
         type="number"
@@ -71,6 +80,7 @@ const GameWeek = () => {
         onChange={gameWeekChangeHandler}
         value={weekSelector}
       />
+      <WeeklyWins weekNumber={weekSelector} wins={parsedWins}/>
       <ul className={classes["game-list"]}>{gameList}</ul>
     </div>
   );

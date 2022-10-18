@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     unique: true,
   },
   password: String,
+  wins: [Object],
   createdAt: {
     type: Date,
     default: Date.now,

@@ -1,4 +1,8 @@
-make webscrapper for game data
-add run webscrapper option to add game page and update game page
 
-have a weekly score system and an annual score system
+add player list with annual and weekly wins with clickable expansion 
+
+
+make all User.find() filter so auth: 1 doesnt show
+
+
+clear out db and reset users so they have the win feild
