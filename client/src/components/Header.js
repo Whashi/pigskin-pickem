@@ -11,7 +11,6 @@ const Header = () => {
   const navigate = useNavigate();
   const [userAuthLevel, setUserAuthLevel] = useState();
   const [httpError, setHttpError] = useState();
-  // const authorized = profileAuthLevel === 2;
   const userRoute = "/user/" + localStorage.getItem("user-id");
   const [hamburgerToggle, setHamburgerToggle] = useState(false);
 
@@ -47,15 +46,17 @@ const Header = () => {
   };
 
   const titleClickHandler = () => {
-    navigate("/game-week")
-  }
+    navigate("/game-week");
+  };
 
   return (
     <Fragment>
       <header>
         <div className={classes["header-container"]}>
           <div className={classes["title-container"]}>
-            <h4 className={classes["header-title"]} onClick={titleClickHandler}>Piggy Pick</h4>
+            <h4 className={classes["header-title"]} onClick={titleClickHandler}>
+              Piggy Pick
+            </h4>
           </div>
           <div className={classes["hamburger-toggle-container"]}>
             <div
@@ -67,13 +68,7 @@ const Header = () => {
           </div>
         </div>
       </header>
-      {hamburgerToggle && (
-        <Navigation
-          userRoute={userRoute}
-          // authorized={authorized}
-          logOut={logOut}
-        />
-      )}
+      {hamburgerToggle && <Navigation userRoute={userRoute} logOut={logOut} />}
     </Fragment>
   );
 };

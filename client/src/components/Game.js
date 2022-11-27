@@ -10,23 +10,29 @@ const Game = (props) => {
   const navigate = useNavigate();
   const privilaged = localStorage.getItem("privilage") === "1";
   const [httpError, setHttpError] = useState("");
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const pickHandler = async (team) => {
-    const { gameId } = props;
-    const userId = localStorage.getItem("user-id");
+    if (props.viewingOwnProfile) {
+      const { gameId } = props;
+      const userId = localStorage.getItem("user-id");
 
-    //update games to database
-    await axios
-      .patch(
-        "/game",
-        { gameId, team, userId },
-        {
-          headers: { "x-auth-token": localStorage.getItem("x-auth-token") },
-        }
-      )
-      .catch((err) => {
-        setHttpError(err.response.data.msg);
-      });
+      //update games to database
+
+      await axios
+        .patch(
+          "/game",
+          { gameId, team, userId },
+          {
+            headers: { "x-auth-token": localStorage.getItem("x-auth-token") },
+          }
+        )
+        .catch((err) => {
+          setHttpError(err.response.data.msg);
+        });
+    } else {
+      setErrorMsg("This is not your profile");
+    }
   };
 
   const editButtonClickHandler = () => {
@@ -83,9 +89,8 @@ const Game = (props) => {
       </div>
       {privilaged && <Button onClick={editButtonClickHandler}>Edit</Button>}
       <h5>
-        {httpError === "Too Late Son"
-          ? "Lock time for this game has passed"
-          : null}
+        {httpError}
+        {errorMsg}
       </h5>
     </div>
   );

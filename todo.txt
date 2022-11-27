@@ -1,8 +1,12 @@
+add weekly wins to game day page
 
-add player list with annual and weekly wins with clickable expansion 
-
-
-make all User.find() filter so auth: 1 doesnt show
-
+ui
 
 clear out db and reset users so they have the win feild
+
+
+
+
+add db of logged in users 
+
+ad webscrapper to update wins

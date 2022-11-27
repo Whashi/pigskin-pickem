@@ -1,7 +1,5 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { WinsContext } from "../store/wins-context";
-import { UserContext } from "../store/user-context";
 import axios from "axios";
 
 import useInputField from "../hooks/input-field";
@@ -11,9 +9,6 @@ import Button from "../ui/Button";
 import classes from "./Login.module.css";
 
 const Login = (props) => {
-  const { setWins } = useContext(WinsContext)
-  const { setUser } = useContext(UserContext);
-
 
   // Destructuring the costum hook to use for the email field
 
@@ -68,13 +63,8 @@ const Login = (props) => {
       localStorage.setItem("user-id", response.data.id);
       localStorage.setItem("privilage", response.data.auth);
       localStorage.setItem("user-name", response.data.user);
-      const wins = response.data.wins.map((win) => {
-        return Object.values(win)
-      })
       // Make a database with current user ids that are logged on and tokens as their key. Have a function check the database every api call
-      setWins(wins)
-      setUser(response.data.user);
-      navigate("/game-week/");
+      navigate(`/game-week/${response.data.id}`);
     }
   };
 

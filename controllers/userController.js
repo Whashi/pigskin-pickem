@@ -66,7 +66,7 @@ exports.getUserId = async (req, res) => {
                 id: docs._id,
                 auth: docs.auth,
                 user: docs.userName,
-                wins: docs.wins
+                wins: docs.wins,
               });
             }
           );
@@ -85,10 +85,12 @@ exports.getUserId = async (req, res) => {
       msg: "Server Error",
     });
   }
-  setWins()
+  setWins();
 };
 
-exports.getUser = async (req, res) => {
+// need to make a seperate getUser for login and veiwing other profiles
+
+exports.getLoggedInUser = async (req, res) => {
   try {
     const userData = await User.findById(req.params.id);
     if (!userData) {
@@ -109,9 +111,36 @@ exports.getUser = async (req, res) => {
   }
 };
 
-exports.getUsers = async (req, res) => {
+exports.getUser = async (req, res) => {
   try {
-    const users = await User.find({ auth: 0 })
+    const userData = await User.findById(req.params.id);
+    if (!userData) {
+      return res.status(404).json({
+        success: false,
+        msg: "User Not Found",
+      });
+    }
+
+    const { userName, id, wins } = userData;
+
+    return res.status(200).json({
+      success: true,
+      data: { userName, id, wins },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      msg: "Server Error",
+    });
+  }
+};
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const usersInfo = await User.find({ auth: 0 });
+    const users = usersInfo.map((user) => {
+      return { userName: user.userName, userId: user.id, wins: user.wins };
+    });
     return res.status(200).json({
       success: true,
       data: users,
@@ -122,7 +151,7 @@ exports.getUsers = async (req, res) => {
       msg: "Server Error",
     });
   }
-}
+};
 
 exports.updateUser = async (req, res) => {
   const { id: _id } = req.params;
